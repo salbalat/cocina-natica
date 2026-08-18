@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<meta name="theme-color" content="#2f6f4e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Cocina de Natica</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232f6f4e'/%3E%3Ctext x='50' y='68' font-size='54' text-anchor='middle'%3E%F0%9F%8D%B2%3C/text%3E%3C/svg%3E">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#f7f5f0;--card:#fff;--ink:#1b201d;--mut:#71787a;--line:#e7e2d8;--acc:#2f6f4e;--acc2:#c8622c;--warm:#fdf2e6;--nav:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#14171a;--card:#1e2225;--ink:#eceff1;--mut:#98a0a4;--line:#2c3235;--warm:#2a221a;--nav:#1a1e21}}
+html,body{margin:0;padding:0;height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45;
+ -webkit-text-size-adjust:100%;overscroll-behavior-y:none}
+#app{padding:0 0 calc(76px + env(safe-area-inset-bottom))}
+.top{background:linear-gradient(135deg,#2f6f4e,#3f8a62);color:#fff;padding:calc(14px + env(safe-area-inset-top)) 16px 14px;position:sticky;top:0;z-index:20}
+.top h1{margin:0;font-size:19px;letter-spacing:-.2px}
+.top p{margin:2px 0 0;font-size:12.5px;opacity:.85}
+.wrap{padding:14px 14px 0;max-width:640px;margin:0 auto}
+.view{display:none} .view.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 15px;margin-bottom:12px}
+h2{font-size:17px;margin:18px 0 9px} h2:first-child{margin-top:4px}
+h3{font-size:14px;margin:0 0 8px;color:var(--acc);text-transform:uppercase;letter-spacing:.5px}
+.mut{color:var(--mut);font-size:13px}
+/* selector de dia */
+.days{display:flex;gap:7px;overflow-x:auto;padding:2px 14px 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.days::-webkit-scrollbar{display:none}
+.dchip{flex:0 0 auto;min-width:54px;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 6px;cursor:pointer}
+.dchip b{display:block;font-size:17px;line-height:1.1} .dchip span{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.4px}
+.dchip.on{background:var(--acc);border-color:var(--acc);color:#fff} .dchip.on span{color:#d8ece1}
+.dchip.buy::after{content:"🛒";display:block;font-size:10px;margin-top:1px}
+/* comidas */
+.meal{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 15px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
+.mico{font-size:22px;flex:0 0 30px;text-align:center;line-height:1.3}
+.mtit{font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--mut);margin-bottom:2px}
+.mtxt{font-size:15px}
+.tech{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tech button{font:inherit;font-size:11.5px;font-weight:600;background:var(--warm);color:var(--acc2);border:none;border-radius:999px;padding:5px 11px;cursor:pointer}
+/* compra */
+.segs{display:flex;gap:8px;margin-bottom:12px}
+.segs button{flex:1;font:inherit;font-size:13px;font-weight:700;padding:11px 6px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--mut);cursor:pointer}
+.segs button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.prog{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 15px;margin-bottom:12px;position:sticky;top:calc(58px + env(safe-area-inset-top));z-index:15}
+.bar{height:9px;background:var(--line);border-radius:99px;overflow:hidden;margin:9px 0 7px}
+.bar i{display:block;height:100%;background:var(--acc);border-radius:99px;transition:width .25s}
+.prow{display:flex;justify-content:space-between;font-size:13px;font-weight:600}
+.sec{margin:16px 0 6px;font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--mut);padding-left:2px}
+.it{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:7px;cursor:pointer}
+.box{flex:0 0 24px;height:24px;border:2px solid #b9b3a7;border-radius:7px;position:relative;margin-top:1px}
+.it.on .box{background:var(--acc);border-color:var(--acc)}
+.it.on .box::after{content:"";position:absolute;left:7px;top:2px;width:5px;height:12px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+.it.on .iname{text-decoration:line-through;color:var(--mut)}
+.ibody{flex:1;min-width:0}
+.iname{font-weight:650;font-size:15px}
+.imeta{font-size:12.5px;color:var(--mut);margin-top:1px}
+.iprice{font-weight:700;font-size:14.5px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.btn{display:block;width:100%;font:inherit;font-size:14px;font-weight:700;padding:13px;border-radius:13px;border:1px solid var(--line);background:var(--card);color:var(--mut);cursor:pointer;margin-top:6px}
+/* recetas */
+.rec{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 15px;margin-bottom:10px}
+.rhead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.rhead h4{margin:0;font-size:16px}
+.rtime{font-size:11.5px;font-weight:700;color:#fff;background:var(--acc2);padding:3px 10px;border-radius:999px;white-space:nowrap}
+.rec p{margin:8px 0 0;font-size:14px;color:var(--ink)}
+.tbtn{margin-top:11px;font:inherit;font-size:13.5px;font-weight:700;background:var(--acc);color:#fff;border:none;border-radius:11px;padding:10px 16px;cursor:pointer;width:100%}
+/* timer overlay */
+#timer{position:fixed;inset:0;background:rgba(12,20,16,.97);color:#fff;z-index:80;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center}
+#timer.on{display:flex}
+#tname{font-size:17px;opacity:.8}
+#tdisp{font-size:74px;font-weight:200;font-variant-numeric:tabular-nums;letter-spacing:-2px}
+#timer .row{display:flex;gap:12px}
+#timer button{font:inherit;font-size:15px;font-weight:700;padding:13px 26px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;cursor:pointer}
+#timer button.pri{background:#fff;color:#14301f;border-color:#fff}
+.ring{width:172px;height:172px;border-radius:50%;border:5px solid rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center}
+.ring.done{border-color:#78d6a4;animation:pulse .8s infinite}
+@keyframes pulse{50%{border-color:rgba(120,214,164,.25)}}
+/* info */
+ul.li{margin:0;padding-left:19px;font-size:14px} ul.li li{margin-bottom:9px}
+.warn{background:var(--warm);border-left:4px solid var(--acc2);border-radius:0 12px 12px 0;padding:11px 13px;font-size:13.5px;margin:10px 0}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td{padding:8px 4px;border-bottom:1px solid var(--line)} td:last-child{text-align:right;font-weight:650;white-space:nowrap}
+tfoot td{font-weight:800;border-top:2px solid var(--ink);border-bottom:none}
+/* nav */
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--nav);border-top:1px solid var(--line);display:flex;z-index:30;
+ padding-bottom:env(safe-area-inset-bottom);backdrop-filter:blur(10px)}
+nav button{flex:1;font:inherit;background:none;border:none;color:var(--mut);padding:9px 2px 8px;cursor:pointer;font-size:10.5px;font-weight:650}
+nav button b{display:block;font-size:21px;font-weight:400;line-height:1.2;filter:grayscale(1) opacity(.65)}
+nav button.on{color:var(--acc)} nav button.on b{filter:none}
+.hint{background:var(--warm);border-radius:14px;padding:12px 14px;font-size:13px;margin-bottom:12px;display:flex;gap:10px;align-items:flex-start}
+.hint b{cursor:pointer;color:var(--acc2)}
+footer{font-size:11.5px;color:var(--mut);text-align:center;padding:18px 16px 8px}
+</style></head><body>
+
+<div class="top"><h1>Cocina de Natica</h1><p>15 días · solo microondas · Mercadona</p></div>
+<div id="app">
+  <div id="v-hoy" class="view on"></div>
+  <div id="v-compra" class="view"></div>
+  <div id="v-menu" class="view"></div>
+  <div id="v-recetas" class="view"></div>
+  <div id="v-info" class="view"></div>
+</div>
+
+<div id="timer"><div id="tname"></div><div class="ring" id="tring"><div id="tdisp">0:00</div></div>
+ <div class="row"><button id="tpause">Pausa</button><button class="pri" id="tclose">Cerrar</button></div>
+ <div style="font-size:12.5px;opacity:.6;max-width:300px">Deja la app abierta mientras corre el temporizador.</div></div>
+
+<nav>
+ <button data-v="hoy" class="on"><b>🍽️</b>Hoy</button>
+ <button data-v="compra"><b>🛒</b>Compra</button>
+ <button data-v="menu"><b>📅</b>Menú</button>
+ <button data-v="recetas"><b>⏱️</b>Recetas</button>
+ <button data-v="info"><b>💡</b>Info</button>
+</nav>
+
+<script>
+const D = {"compras": [{"id": 1, "titulo": "Compra 1 · Día 1", "sub": "Despensa para 15 días + fresco de la semana 1", "items": [{"n": "Arroz redondo Hacendado", "f": "1 kg", "u": 1, "p": 0.75, "nota": "Base de comidas: 15-20 raciones", "s": "Despensa"}, {"n": "Macarrones Hacendado", "f": "1 kg", "u": 1, "p": 0.79, "nota": "~10 raciones", "s": "Despensa"}, {"n": "Espaguetis Hacendado", "f": "500 g", "u": 1, "p": 0.65, "nota": "~5 raciones", "s": "Despensa"}, {"n": "Copos de avena Hacendado", "f": "500 g", "u": 1, "p": 0.95, "nota": "Desayunos (porridge)", "s": "Despensa"}, {"n": "Café soluble", "f": "100 g", "u": 1, "p": 2.2, "nota": "Opcional", "s": "Despensa"}, {"n": "Azúcar", "f": "1 kg", "u": 1, "p": 1.15, "nota": "Opcional", "s": "Despensa"}, {"n": "Cacahuetes tostados", "f": "200 g", "u": 1, "p": 1.2, "nota": "Snack saciante", "s": "Despensa"}, {"n": "Galletas María", "f": "800 g", "u": 1, "p": 1.2, "nota": "Desayunos y meriendas", "s": "Despensa"}, {"n": "Aceite de oliva virgen extra", "f": "1 L", "u": 1, "p": 4.7, "nota": "Dura más de un mes", "s": "Aceite y especias"}, {"n": "Sal fina", "f": "1 kg", "u": 1, "p": 0.25, "nota": "", "s": "Aceite y especias"}, {"n": "Pimentón dulce", "f": "bote", "u": 1, "p": 0.9, "nota": "Da sabor sin coste", "s": "Aceite y especias"}, {"n": "Orégano", "f": "bote", "u": 1, "p": 0.75, "nota": "", "s": "Aceite y especias"}, {"n": "Pimienta negra molida", "f": "bote", "u": 1, "p": 1.0, "nota": "", "s": "Aceite y especias"}, {"n": "Tomate frito Hacendado", "f": "brik 780 g", "u": 1, "p": 1.15, "nota": "Pasta y arroz a la cubana", "s": "Conservas y salsas"}, {"n": "Tomate triturado", "f": "lata 400 g", "u": 2, "p": 0.9, "nota": "Sofritos y guisos", "s": "Conservas y salsas"}, {"n": "Caldo de pollo", "f": "brik 1 L", "u": 1, "p": 0.85, "nota": "Para cocer pollo y arroz caldoso", "s": "Conservas y salsas"}, {"n": "Atún claro en aceite", "f": "pack 3 x 80 g", "u": 2, "p": 2.6, "nota": "Proteína que no ocupa nevera", "s": "Conservas y salsas"}, {"n": "Sardinillas en aceite", "f": "lata", "u": 2, "p": 1.4, "nota": "", "s": "Conservas y salsas"}, {"n": "Garbanzo cocido", "f": "tarro 570 g", "u": 2, "p": 1.0, "nota": "Listo, solo calentar", "s": "Conservas y salsas"}, {"n": "Lenteja cocida", "f": "tarro 570 g", "u": 2, "p": 1.0, "nota": "Listo, solo calentar", "s": "Conservas y salsas"}, {"n": "Alubia cocida pinta", "f": "tarro 570 g", "u": 1, "p": 0.8, "nota": "", "s": "Conservas y salsas"}, {"n": "Maíz dulce", "f": "lata 300 g", "u": 1, "p": 0.85, "nota": "Ensaladas", "s": "Conservas y salsas"}, {"n": "Leche semidesnatada", "f": "pack 6 x 1 L", "u": 1, "p": 5.04, "nota": "El brik cerrado no necesita nevera", "s": "Bebidas y leche"}, {"n": "Patatas", "f": "2 kg", "u": 1, "p": 2.2, "nota": "Se asan en 7 minutos", "s": "Fruta y verdura"}, {"n": "Cebollas", "f": "1 kg", "u": 1, "p": 1.25, "nota": "Base de todo sofrito", "s": "Fruta y verdura"}, {"n": "Ajos", "f": "malla 3 ud", "u": 1, "p": 0.95, "nota": "", "s": "Fruta y verdura"}, {"n": "Zanahorias", "f": "1 kg", "u": 1, "p": 1.1, "nota": "Crudas o al vapor", "s": "Fruta y verdura"}, {"n": "Calabacín", "f": "2 ud (~600 g)", "u": 1, "p": 1.2, "nota": "Al vapor en 4 minutos", "s": "Fruta y verdura"}, {"n": "Pimiento verde", "f": "500 g", "u": 1, "p": 1.45, "nota": "", "s": "Fruta y verdura"}, {"n": "Tomates", "f": "1 kg", "u": 1, "p": 1.85, "nota": "Ensaladas y pan con tomate", "s": "Fruta y verdura"}, {"n": "Plátanos", "f": "1 kg", "u": 1, "p": 1.65, "nota": "Desayunos", "s": "Fruta y verdura"}, {"n": "Manzanas", "f": "1 kg", "u": 1, "p": 1.85, "nota": "Aguantan sin nevera", "s": "Fruta y verdura"}, {"n": "Naranjas de mesa", "f": "1,5 kg", "u": 1, "p": 1.95, "nota": "", "s": "Fruta y verdura"}, {"n": "Limones", "f": "500 g", "u": 1, "p": 0.95, "nota": "Para aliñar", "s": "Fruta y verdura"}, {"n": "Pan de molde integral", "f": "460 g", "u": 1, "p": 1.35, "nota": "Aguanta toda la semana", "s": "Panadería"}, {"n": "Huevos L", "f": "docena", "u": 1, "p": 3.05, "nota": "La proteína estrella del microondas", "s": "Huevos y lácteos"}, {"n": "Queso rallado o en lonchas", "f": "200 g", "u": 1, "p": 1.7, "nota": "", "s": "Huevos y lácteos"}, {"n": "Yogur natural", "f": "pack 4", "u": 1, "p": 1.05, "nota": "", "s": "Huevos y lácteos"}, {"n": "Pechuga de pollo fileteada", "f": "~600 g", "u": 1, "p": 4.3, "nota": "Usar días 4 y 7 (máx. 2-3 días en nevera)", "s": "Carne y charcutería"}, {"n": "Pavo o jamón cocido en lonchas", "f": "200 g", "u": 1, "p": 1.6, "nota": "Cenas rápidas", "s": "Carne y charcutería"}]}, {"id": 2, "titulo": "Compra 2 · Día 8", "sub": "Solo producto fresco", "items": [{"n": "Patatas", "f": "2 kg", "u": 1, "p": 2.2, "nota": "", "s": "Fruta y verdura"}, {"n": "Cebollas", "f": "1 kg", "u": 1, "p": 1.25, "nota": "", "s": "Fruta y verdura"}, {"n": "Zanahorias", "f": "1 kg", "u": 1, "p": 1.1, "nota": "", "s": "Fruta y verdura"}, {"n": "Calabacín", "f": "2 ud (~600 g)", "u": 1, "p": 1.2, "nota": "", "s": "Fruta y verdura"}, {"n": "Pimiento verde", "f": "500 g", "u": 1, "p": 1.45, "nota": "", "s": "Fruta y verdura"}, {"n": "Tomates", "f": "1 kg", "u": 1, "p": 1.85, "nota": "", "s": "Fruta y verdura"}, {"n": "Plátanos", "f": "1 kg", "u": 1, "p": 1.65, "nota": "", "s": "Fruta y verdura"}, {"n": "Manzanas", "f": "1 kg", "u": 1, "p": 1.85, "nota": "", "s": "Fruta y verdura"}, {"n": "Naranjas de mesa", "f": "1,5 kg", "u": 1, "p": 1.95, "nota": "", "s": "Fruta y verdura"}, {"n": "Pan de molde integral", "f": "460 g", "u": 1, "p": 1.35, "nota": "", "s": "Panadería"}, {"n": "Tomate frito (reponer)", "f": "brik 780 g", "u": 1, "p": 1.15, "nota": "", "s": "Conservas y salsas"}, {"n": "Atún claro (reponer)", "f": "pack 3 x 80 g", "u": 1, "p": 1.3, "nota": "", "s": "Conservas y salsas"}, {"n": "Huevos L", "f": "docena", "u": 1, "p": 3.05, "nota": "", "s": "Huevos y lácteos"}, {"n": "Queso rallado o en lonchas", "f": "200 g", "u": 1, "p": 1.7, "nota": "", "s": "Huevos y lácteos"}, {"n": "Yogur natural", "f": "pack 4", "u": 1, "p": 1.05, "nota": "", "s": "Huevos y lácteos"}, {"n": "Pechuga de pollo fileteada", "f": "~600 g", "u": 1, "p": 4.3, "nota": "Usar días 10 y 14", "s": "Carne y charcutería"}, {"n": "Pavo o jamón cocido en lonchas", "f": "200 g", "u": 1, "p": 1.6, "nota": "", "s": "Carne y charcutería"}]}], "secOrder": ["Fruta y verdura", "Panadería", "Despensa", "Conservas y salsas", "Aceite y especias", "Bebidas y leche", "Huevos y lácteos", "Carne y charcutería"], "secIcon": {"Fruta y verdura": "🥕", "Panadería": "🍞", "Despensa": "🍚", "Conservas y salsas": "🥫", "Aceite y especias": "🫒", "Bebidas y leche": "🥛", "Huevos y lácteos": "🥚", "Carne y charcutería": "🍗"}, "menu": [{"d": 1, "de": "Café con leche + pan con tomate rallado y aceite", "co": "Arroz a la cubana: arroz al micro, tomate frito, huevo y plátano", "me": "Yogur natural", "ce": "Ensalada de tomate, cebolla, maíz y atún + pan"}, {"d": 2, "de": "Porridge de avena con leche y plátano", "co": "Macarrones con tomate, atún y queso rallado", "me": "Manzana", "ce": "Patata asada con huevo revuelto y pimentón + zanahoria rallada con limón"}, {"d": 3, "de": "Pan con aceite y tomate + café con leche", "co": "Lentejas con sofrito de cebolla, zanahoria y pimiento", "me": "Naranja", "ce": "Tortilla de calabacín en taza + pan + tomate en rodajas"}, {"d": 4, "de": "Leche con galletas + manzana", "co": "Pollo al microondas con patata y zanahoria", "me": "Puñado de cacahuetes", "ce": "Sopa rápida de verduras con el arroz sobrante + huevo escalfado"}, {"d": 5, "de": "Porridge de avena con manzana rallada", "co": "Arroz con verduras y garbanzos", "me": "Yogur natural", "ce": "Sándwich caliente de pavo y queso + ensalada de tomate"}, {"d": 6, "de": "Pan con tomate y aceite + café con leche", "co": "Espaguetis con sofrito de pimiento y cebolla y sardinillas", "me": "Plátano", "ce": "Calabacín y patata al vapor con ajo y aceite + huevo revuelto"}, {"d": 7, "de": "Leche con avena y plátano", "co": "Alubias con verduras y el pollo restante (potaje rápido)", "me": "Naranja", "ce": "Ensalada campera: patata, tomate, cebolla, atún, maíz y huevo"}, {"d": 8, "de": "Café con leche + pan con aceite", "co": "Arroz caldoso con verduras y atún", "me": "Manzana", "ce": "Revuelto de calabacín y cebolla + pan"}, {"d": 9, "de": "Porridge con plátano", "co": "Macarrones con sofrito de tomate y huevo picado", "me": "Yogur natural", "ce": "Ensalada de garbanzos con tomate, cebolla y maíz"}, {"d": 10, "de": "Pan con tomate + café con leche", "co": "Pollo con arroz y limón", "me": "Naranja", "ce": "Puré de patata casero con lonchas de pavo"}, {"d": 11, "de": "Leche con galletas + manzana", "co": "Lentejas con arroz", "me": "Puñado de cacahuetes", "ce": "Tortilla de patata en taza + tomate aliñado"}, {"d": 12, "de": "Porridge con manzana rallada", "co": "Espaguetis con calabacín, ajo y queso", "me": "Plátano", "ce": "Sopa de verduras con pan + sardinillas"}, {"d": 13, "de": "Café con leche + pan con aceite", "co": "Garbanzos con tomate y huevo", "me": "Yogur natural", "ce": "Sándwich caliente de queso y tomate + zanahoria rallada"}, {"d": 14, "de": "Leche con avena y plátano", "co": "Pollo con patata y pimiento al microondas", "me": "Naranja", "ce": "Ensalada de pasta fría: pasta sobrante, atún, maíz y tomate"}, {"d": 15, "de": "Lo que quede: porridge o pan con aceite", "co": "Arroz de aprovechamiento: arroz + restos de verdura y legumbre", "me": "Fruta que quede", "ce": "Huevos revueltos con pan y tomate"}], "recetas": [{"t": "Arroz", "p": "1 vaso de arroz + 2 vasos de agua + sal en un bol grande. Tapa dejando un hueco. 5 min a máxima potencia + 10 min a potencia media. Reposar 5 min tapado y remover.", "tm": "15 min + 5 de reposo", "sec": 900}, {"t": "Pasta", "p": "Pasta en el bol, agua que la cubra 3 dedos, sal, SIN tapar. El tiempo del paquete + 3 min. Remover a mitad. Colar.", "tm": "11-14 min", "sec": 780}, {"t": "Patata asada", "p": "Lavar, pinchar 6-8 veces con el tenedor, envolver en papel de cocina mojado. 6-8 min por patata mediana, dándole la vuelta a mitad.", "tm": "7 min", "sec": 420}, {"t": "Verdura al vapor", "p": "Trocear, poner en el bol con 2 cucharadas de agua, tapar. Calabacín 4 min, zanahoria 6 min, patata en dados 7 min.", "tm": "4-7 min", "sec": 300}, {"t": "Sofrito base", "p": "Cebolla, pimiento y ajo picados + 1 cucharada de aceite en un bol tapado. 6 min removiendo a mitad. Añadir tomate triturado y 3 min más.", "tm": "9 min", "sec": 540}, {"t": "Huevo revuelto", "p": "2 huevos batidos con una pizca de sal en una taza untada de aceite. 40 s, remover, 30 s más. Sacar cuando aún esté algo cremoso.", "tm": "1,5 min", "sec": 40}, {"t": "Huevo escalfado", "p": "Huevo en una taza con agua que lo cubra. PINCHAR LA YEMA con un palillo. Tapar. 50-60 s. Sacar con cuchara.", "tm": "1 min", "sec": 55}, {"t": "Tortilla en taza", "p": "2 huevos batidos + calabacín o patata ya cocidos + sal, en taza engrasada. 2 min, parando a mitad para remover.", "tm": "2 min", "sec": 120}, {"t": "Pollo", "p": "Filetes finos en el bol con 3 cucharadas de caldo, ajo y pimentón. Tapar. 3 min, dar la vuelta, 2-3 min más. Reposar 3 min tapado. Debe quedar blanco por dentro, sin zonas rosadas.", "tm": "6 min + 3 de reposo", "sec": 360}, {"t": "Legumbre de bote", "p": "Escurrir y enjuagar bien. Añadir al sofrito con un chorrito de agua. 3-4 min tapado.", "tm": "4 min", "sec": 240}, {"t": "Puré de patata", "p": "Patata cocida al micro, aplastar con el tenedor y mezclar con un chorro de leche caliente, aceite y sal.", "tm": "9 min", "sec": 540}, {"t": "Sopa de verduras", "p": "Verdura en dados + 400 ml de caldo o agua con sal en el bol tapado. 10 min. Añadir arroz o pasta ya cocidos.", "tm": "10 min", "sec": 600}], "seguridad": [{"t": "Nunca un huevo con cáscara", "x": "Revienta. Y si es sin cáscara, pincha siempre la yema con un palillo antes de calentarla."}, {"t": "Recipiente apto", "x": "Nada de metal, ni platos con filo dorado, ni tuppers finos de un solo uso. Cristal o plástico marcado como apto para microondas."}, {"t": "Tapar, pero con respiradero", "x": "Tapa dejando una esquina abierta o usa la tapa con válvula. Si cierras del todo, salta."}, {"t": "Remover a mitad", "x": "El microondas deja puntos fríos. Remover es lo que evita que quede crudo por dentro."}, {"t": "Cuidado al calentar agua sola", "x": "Puede sobrecalentarse y salir hirviendo de golpe. Mete un palillo de madera en el vaso."}, {"t": "El pollo, bien hecho", "x": "Blanco por dentro, sin zonas rosadas ni jugo rojizo. Si dudas, 1 minuto más y 3 de reposo tapado."}], "conserva": [{"t": "En la nevera (poco sitio, prioriza esto)", "x": "Pollo crudo (máx. 2-3 días), huevos, queso, pavo, yogures, leche abierta, tomate, calabacín, pimiento, sobras en tupper."}, {"t": "Fuera de la nevera", "x": "Patatas, cebollas, ajos, plátanos, manzanas, naranjas, limones, pan, briks de leche cerrados, latas y tarros sin abrir."}, {"t": "Latas y tarros abiertos", "x": "Nunca los guardes en la lata. Pasa el contenido a un tupper: atún 1-2 días, legumbre escurrida 3 días."}, {"t": "Sobras", "x": "Enfría y mete en nevera antes de 2 horas. Cómelas en 48 h y recalienta hasta que humee."}, {"t": "Trucos de espacio", "x": "Compra fruta y verdura que aguante fuera. Las patatas y cebollas, en un lugar oscuro y seco, separadas entre sí."}], "utensilios": [{"n": "Bol grande con tapa apto microondas", "f": "1,5-2 L", "p": 3.5}, {"n": "Tuppers con tapa", "f": "pack 3", "p": 2.5}, {"n": "Taza grande apta microondas", "f": "1 ud", "p": 1.5}, {"n": "Colador", "f": "1 ud", "p": 1.5}, {"n": "Cuchillo + tabla de cortar", "f": "1 ud", "p": 3.0}, {"n": "Abrelatas", "f": "1 ud", "p": 1.5}, {"n": "Rallador", "f": "1 ud", "p": 1.5}]};
+/* ---- almacenamiento seguro: si el navegador lo bloquea, funciona en memoria ---- */
+const mem = {};
+const S = {
+  get(k,d){ try{ const v=localStorage.getItem(k); return v===null? d : JSON.parse(v);}catch(e){ return k in mem? mem[k]: d; } },
+  set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){ mem[k]=v; } }
+};
+let state = { dia: S.get('dia',1), checked: S.get('checked',{}), compra: S.get('compra',1), inicio: S.get('inicio',null) };
+const save=()=>{S.set('dia',state.dia);S.set('checked',state.checked);S.set('compra',state.compra);S.set('inicio',state.inicio);};
+const eur = n => n.toFixed(2).replace('.',',')+' €';
+const esc = s => String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+/* dia automatico si marco fecha de inicio */
+function diaAuto(){
+  if(!state.inicio) return null;
+  const ms = Date.now() - state.inicio;
+  const d = Math.floor(ms/86400000)+1;
+  return (d>=1 && d<=15) ? d : null;
+}
+const TECH = [
+ [/arroz/i,'Arroz'],[/macarron|espagueti|pasta/i,'Pasta'],[/patata asada|patata al|puré de patata/i,'Patata asada'],
+ [/vapor/i,'Verdura al vapor'],[/sofrito/i,'Sofrito base'],[/revuelto/i,'Huevo revuelto'],[/escalfado/i,'Huevo escalfado'],
+ [/tortilla/i,'Tortilla en taza'],[/pollo/i,'Pollo'],[/lenteja|garbanzo|alubia/i,'Legumbre de bote'],
+ [/puré/i,'Puré de patata'],[/sopa/i,'Sopa de verduras']
+];
+function tecnicas(txt){ const o=[]; TECH.forEach(([re,n])=>{ if(re.test(txt)&&!o.includes(n)) o.push(n); }); return o; }
+
+/* ---------------- HOY ---------------- */
+function renderHoy(){
+  const auto = diaAuto(); if(auto) state.dia = auto;
+  const m = D.menu[state.dia-1];
+  const chips = D.menu.map(x=>`<div class="dchip${x.d===state.dia?' on':''}${(x.d===1||x.d===8)?' buy':''}" data-d="${x.d}"><b>${x.d}</b><span>día</span></div>`).join('');
+  const meals = [['🌅','Desayuno',m.de],['☀️','Comida',m.co],['🍎','Media tarde',m.me],['🌙','Cena',m.ce]];
+  const mealsHtml = meals.map(([i,t,x])=>{
+     const tc = tecnicas(x).map(n=>`<button data-rec="${esc(n)}">⏱️ ${esc(n)}</button>`).join('');
+     return `<div class="meal"><div class="mico">${i}</div><div style="flex:1"><div class="mtit">${t}</div>
+       <div class="mtxt">${esc(x)}</div>${tc?`<div class="tech">${tc}</div>`:''}</div></div>`;}).join('');
+  const buy = (state.dia===1||state.dia===8) ? `<div class="warn">🛒 Hoy toca <b>compra ${state.dia===1?1:2}</b>. Abre la pestaña Compra y ve marcando.</div>`:'';
+  document.getElementById('v-hoy').innerHTML = `
+   <div class="days">${chips}</div>
+   <div class="wrap">
+    ${S.get('_hint',1)?`<div class="hint"><span>📱</span><div>Instálala: menú de Chrome ⋮ → <b>Añadir a pantalla de inicio</b> (o «Instalar app»). Después funciona sin internet. <b id="dismiss">Ocultar</b></div></div>`:''}
+    ${buy}
+    ${mealsHtml}
+    <button class="btn" id="setStart">${state.inicio?'Reiniciar la fecha de inicio del plan':'Marcar hoy como día 1 (avanza solo cada día)'}</button>
+    <footer>Precios orientativos Mercadona · agosto 2026</footer>
+   </div>`;
+  document.querySelectorAll('.dchip').forEach(c=>c.onclick=()=>{state.dia=+c.dataset.d;state.inicio=null;save();renderHoy();});
+  document.querySelectorAll('[data-rec]').forEach(b=>b.onclick=()=>{ go('recetas'); setTimeout(()=>{
+      const el=[...document.querySelectorAll('.rec')].find(r=>r.dataset.t===b.dataset.rec);
+      if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.style.outline='2px solid var(--acc)';setTimeout(()=>el.style.outline='',1600);} },80); });
+  const ss=document.getElementById('setStart');
+  if(ss) ss.onclick=()=>{ if(state.inicio){state.inicio=null;} else {const d=new Date();d.setHours(0,0,0,0);state.inicio=d.getTime();state.dia=1;} save(); renderHoy(); };
+  const dm=document.getElementById('dismiss'); if(dm) dm.onclick=()=>{S.set('_hint',0);renderHoy();};
+}
+
+/* ---------------- COMPRA ---------------- */
+function renderCompra(){
+  const c = D.compras.find(x=>x.id===state.compra);
+  const groups = {};
+  c.items.forEach((it,i)=>{ (groups[it.s]=groups[it.s]||[]).push({...it,k:c.id+'-'+i}); });
+  let total=0, hecho=0, pend=0, n=0, nh=0;
+  c.items.forEach((it,i)=>{ total+=it.p; n++; if(state.checked[c.id+'-'+i]){hecho+=it.p;nh++;} else pend+=it.p; });
+  const secs = D.secOrder.filter(s=>groups[s]).map(s=>`<div class="sec">${D.secIcon[s]||''} ${esc(s)}</div>`+
+     groups[s].map(it=>`<div class="it${state.checked[it.k]?' on':''}" data-k="${it.k}"><div class="box"></div>
+       <div class="ibody"><div class="iname">${esc(it.n)}</div><div class="imeta">${esc(it.f)}${it.u>1?' × '+it.u:''}${it.nota?' · '+esc(it.nota):''}</div></div>
+       <div class="iprice">${eur(it.p)}</div></div>`).join('')).join('');
+  document.getElementById('v-compra').innerHTML = `<div class="wrap">
+    <div class="segs">${D.compras.map(x=>`<button data-c="${x.id}" class="${x.id===state.compra?'on':''}">${x.id===1?'Compra 1 · día 1':'Compra 2 · día 8'}</button>`).join('')}</div>
+    <div class="prog"><div style="font-size:13px;color:var(--mut)">${esc(c.sub)}</div>
+      <div class="bar"><i style="width:${n?Math.round(nh/n*100):0}%"></i></div>
+      <div class="prow"><span>${nh} de ${n} productos</span><span>Faltan ${eur(pend)}</span></div>
+      <div class="prow" style="margin-top:4px;color:var(--mut);font-weight:500"><span>En el carro ${eur(hecho)}</span><span>Total ${eur(total)}</span></div></div>
+    ${secs}
+    <button class="btn" id="reset">Desmarcar todo</button>
+    <footer>Los precios son orientativos y pueden variar según la tienda.</footer></div>`;
+  document.querySelectorAll('.segs button').forEach(b=>b.onclick=()=>{state.compra=+b.dataset.c;save();renderCompra();});
+  document.querySelectorAll('.it').forEach(el=>el.onclick=()=>{
+     const k=el.dataset.k; state.checked[k]=!state.checked[k]; save();
+     if(navigator.vibrate) navigator.vibrate(12); renderCompra();});
+  document.getElementById('reset').onclick=()=>{ c.items.forEach((_,i)=>delete state.checked[c.id+'-'+i]); save(); renderCompra(); };
+}
+
+/* ---------------- MENU ---------------- */
+function renderMenu(){
+  document.getElementById('v-menu').innerHTML = `<div class="wrap">
+   <h2>Los 15 días</h2>
+   ${D.menu.map(m=>`<div class="card"><h3>Día ${m.d}${(m.d===1||m.d===8)?' · compra 🛒':''}</h3>
+     <div style="font-size:14px"><b>Desayuno.</b> ${esc(m.de)}<br><b>Comida.</b> ${esc(m.co)}<br>
+     <b>Media tarde.</b> ${esc(m.me)}<br><b>Cena.</b> ${esc(m.ce)}</div></div>`).join('')}
+   <div class="warn">El pollo fresco solo aguanta 2-3 días en la nevera: por eso está en los días 4, 7, 10 y 14.</div>
+   <footer>~1.900-2.200 kcal al día · unos 95 g de proteína</footer></div>`;
+}
+
+/* ---------------- RECETAS ---------------- */
+function renderRecetas(){
+  document.getElementById('v-recetas').innerHTML = `<div class="wrap">
+   <div class="warn">Tiempos para un microondas de <b>800 W</b>. Si el tuyo tiene menos potencia, suma un 20-30 %.</div>
+   ${D.recetas.map((r,i)=>`<div class="rec" data-t="${esc(r.t)}"><div class="rhead"><h4>${esc(r.t)}</h4><span class="rtime">${esc(r.tm)}</span></div>
+     <p>${esc(r.p)}</p><button class="tbtn" data-i="${i}">⏱️ Poner temporizador</button></div>`).join('')}
+   <footer>Pon siempre el recipiente destapado un poco. Nunca huevos con cáscara.</footer></div>`;
+  document.querySelectorAll('.tbtn').forEach(b=>b.onclick=()=>startTimer(D.recetas[+b.dataset.i]));
+}
+
+/* ---------------- INFO ---------------- */
+function renderInfo(){
+  const ut = D.utensilios.reduce((a,b)=>a+b.p,0);
+  document.getElementById('v-info').innerHTML = `<div class="wrap">
+   <h2>Seguridad con el microondas</h2>
+   <div class="card"><ul class="li">${D.seguridad.map(s=>`<li><b>${esc(s.t)}.</b> ${esc(s.x)}</li>`).join('')}</ul></div>
+   <h2>Qué va a la nevera y qué no</h2>
+   <div class="card">${D.conserva.map(c=>`<div style="padding:8px 0;border-bottom:1px solid var(--line)"><h3 style="margin-bottom:3px">${esc(c.t)}</h3><div style="font-size:14px">${esc(c.x)}</div></div>`).join('')}</div>
+   <h2>Utensilios (una sola vez)</h2>
+   <div class="card"><table><tbody>${D.utensilios.map(u=>`<tr><td>${esc(u.n)}<div class="mut">${esc(u.f)}</div></td><td>${eur(u.p)}</td></tr>`).join('')}</tbody>
+   <tfoot><tr><td>Total</td><td>${eur(ut)}</td></tr></tfoot></table></div>
+   <h2>Si el mes viene justo</h2>
+   <div class="card"><ul class="li">
+    <li><b>Aceite de oliva suave o de girasol</b> en vez de virgen extra: 2-3,50 € menos.</li>
+    <li><b>Quita café, azúcar y galletas:</b> unos 4,50 € menos.</li>
+    <li><b>Legumbre seca en vez de bote:</b> un tercio del precio. Necesita 8 h de remojo y 25 min de microondas a potencia media.</li>
+    <li><b>Más huevos y menos pollo:</b> más proteína por euro.</li>
+    <li><b>Fruta al peso</b> en vez de bandeja, y siempre marca Hacendado.</li></ul></div>
+   <h2>Rutina que ahorra tiempo</h2>
+   <div class="card"><ul class="li">
+    <li>El día de compra, cuece de golpe <b>arroz para 3 días</b> y una tanda de patatas. Recalentar tarda 90 segundos.</li>
+    <li>Haz el <b>sofrito doble</b> y guarda la mitad: sirve para lentejas, pasta, arroz y garbanzos.</li>
+    <li>Primero lo que caduca: <b>pollo y calabacín</b> al principio de la semana.</li>
+    <li>Antes de la compra 2, mira qué queda y desmarca lo que sobre.</li></ul></div>
+   <footer>Total 15 días: 91,53 € · 6,10 € al día<br>Precios orientativos de Mercadona, agosto 2026</footer></div>`;
+}
+
+/* ---------------- TEMPORIZADOR ---------------- */
+let tInt=null, tLeft=0, tRun=false;
+function fmt(s){ const m=Math.floor(s/60); return m+':'+String(s%60).padStart(2,'0'); }
+function startTimer(r){
+  tLeft=r.sec; tRun=true;
+  document.getElementById('tname').textContent=r.t;
+  document.getElementById('tring').classList.remove('done');
+  document.getElementById('tdisp').textContent=fmt(tLeft);
+  document.getElementById('timer').classList.add('on');
+  document.getElementById('tpause').textContent='Pausa';
+  clearInterval(tInt);
+  tInt=setInterval(()=>{ if(!tRun) return; tLeft--;
+    document.getElementById('tdisp').textContent=fmt(Math.max(tLeft,0));
+    if(tLeft<=0){ clearInterval(tInt); tRun=false; document.getElementById('tring').classList.add('done');
+      document.getElementById('tdisp').textContent='¡Listo!'; beep(); if(navigator.vibrate) navigator.vibrate([300,150,300,150,300]); }
+  },1000);
+}
+function beep(){ try{ const a=new (window.AudioContext||window.webkitAudioContext)();
+  [0,.45,.9].forEach(t=>{ const o=a.createOscillator(),g=a.createGain();
+    o.frequency.value=880; o.connect(g); g.connect(a.destination);
+    g.gain.setValueAtTime(.0001,a.currentTime+t); g.gain.exponentialRampToValueAtTime(.35,a.currentTime+t+.02);
+    g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+t+.32); o.start(a.currentTime+t); o.stop(a.currentTime+t+.35); }); }catch(e){} }
+document.getElementById('tpause').onclick=e=>{ tRun=!tRun; e.target.textContent=tRun?'Pausa':'Seguir'; };
+document.getElementById('tclose').onclick=()=>{ clearInterval(tInt); tRun=false; document.getElementById('timer').classList.remove('on'); };
+
+/* ---------------- NAV ---------------- */
+const R={hoy:renderHoy,compra:renderCompra,menu:renderMenu,recetas:renderRecetas,info:renderInfo};
+function go(v){
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  document.querySelectorAll('.view').forEach(s=>s.classList.remove('on'));
+  document.getElementById('v-'+v).classList.add('on');
+  R[v](); window.scrollTo(0,0);
+}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.v));
+renderHoy();
+</script><script>
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
+</script>
+</body></html>
